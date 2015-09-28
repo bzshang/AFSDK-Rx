@@ -42,13 +42,14 @@ namespace ConsoleExample
 
             IDisposable subscription = sumStream.Subscribe(evt =>
             {
-                Console.WriteLine("Timestamp: {0}, SUM_SINSUOID_CDT158: {1}", evt.Value.Timestamp.ToString("HH:mm:ss.ffff"), evt.Value.Value);
+                Console.WriteLine("Timestamp: {0}, SINUSOID + CDT158: {1}", evt.Value.Timestamp.ToString("HH:mm:ss.ffff"), evt.Value.Value);
             });
 
             Console.WriteLine("Press any key to unsubscribe");
             Console.ReadKey();
 
             subscription.Dispose();
+            dataPipe.Dispose();
         }
     }
 }
