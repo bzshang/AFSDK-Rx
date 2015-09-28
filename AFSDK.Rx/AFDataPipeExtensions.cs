@@ -1,45 +1,16 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 using System.Reactive.Linq;
 using System.Reactive.Disposables;
+using System.Reactive.Concurrency;
 
 using OSIsoft.AF.Data;
-using System.Reactive.Concurrency;
 
 namespace AFSDK.Rx
 {
     public static class AFDataPipeExtensions
     {
-        //public static IObservable<AFDataPipeEvent> CreateObservable(this AFDataPipe dataPipe, double interval)
-        //{
-        //    return Observable.Create<AFDataPipeEvent>(observer =>
-        //    {
-        //        IDisposable dpToken = dataPipe.Subscribe(observer);
-
-        //        Timer timer = new Timer();
-        //        timer.Interval = interval;
-        //        timer.Elapsed += (object sender, ElapsedEventArgs e) =>
-        //        {
-        //            bool hasMoreEvents = true;
-        //            while (hasMoreEvents)
-        //            {
-        //                dataPipe.GetObserverEvents(out hasMoreEvents);
-        //            }
-        //        };
-
-        //        timer.Start();
-
-        //        return Disposable.Create(() =>
-        //        {
-        //            timer.Dispose();
-        //            dpToken.Dispose();     
-        //        });
-        //    });
-        //}
-
-        public static IObservable<AFDataPipeEvent> CreateObservable(this AFDataPipe dataPipe, double seconds)
+        public static IObservable<AFDataPipeEvent> CreateObservable(this AFDataPipe dataPipe, double seconds = 1)
         {
             TimeSpan interval = TimeSpan.FromSeconds(seconds);
 
@@ -53,7 +24,6 @@ namespace AFSDK.Rx
                 {
                     try
                     {
-
                         bool hasMoreEvents = true;
                         while (hasMoreEvents)
                         {
@@ -75,38 +45,10 @@ namespace AFSDK.Rx
                     dpToken.Dispose();
                 });
 
-            }).Publish().RefCount();
+            })
+            .Publish()
+            .RefCount();
 
-        }
-
-        public static IObservable<AFDataPipeEvent> CreateObservable(this AFDataPipe dataPipe, double interval, CancellationToken token)
-        {
-            return Observable.Create<AFDataPipeEvent>(observer =>
-            {
-                IDisposable dpToken = dataPipe.Subscribe(observer);
-
-                Task.Run(() =>
-                {
-                    while (!token.IsCancellationRequested)
-                    {
-                        bool hasMoreEvents = true;
-                        while (hasMoreEvents)
-                        {
-                            dataPipe.GetObserverEvents(out hasMoreEvents);
-                        }
-                        Thread.Sleep(Convert.ToInt32(interval));
-                    }
-
-                }, token);
-
-                
-
-                return Disposable.Create(() =>
-                {
-                    //timer.Dispose();
-                    dpToken.Dispose();
-                });
-            });
         }
     }
 }
