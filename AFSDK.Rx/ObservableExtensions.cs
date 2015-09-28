@@ -42,9 +42,10 @@ namespace AFSDK.Rx
                 .CombineLatest(source2, (s1, s2) => new[] { s1, s2 })
                 .Select(evts =>
                 {
-                    double sinusoid = Convert.ToDouble(evts[0].Value.Value);
-                    double cdt158 = Convert.ToDouble(evts[1].Value.Value);
-                    double result = sinusoid + cdt158;
+                    //TODO: handle different types
+                    double d1 = Convert.ToDouble(evts[0].Value.Value);
+                    double d2 = Convert.ToDouble(evts[1].Value.Value);
+                    double result = d1 + d2;
 
                     DateTime timestamp = evts[0].Value.Timestamp > evts[1].Value.Timestamp ? evts[0].Value.Timestamp : evts[1].Value.Timestamp;
 
