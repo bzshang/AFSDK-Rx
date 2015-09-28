@@ -1,5 +1,5 @@
 # AFSDK-Rx
-Implementation of Rx.NET for AF SDK
+Library for using Rx.NET in AF SDK
 
 ## AFDataPipeExtensions
 
